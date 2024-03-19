@@ -2,5 +2,5 @@
 
 public interface IHazardNotifier
 {
-    void NotifyDanger(string containerNumber);
+    void NotifyDanger(string message);
 }

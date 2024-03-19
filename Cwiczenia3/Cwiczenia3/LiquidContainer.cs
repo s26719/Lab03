@@ -2,22 +2,32 @@
 
 public class LiquidContainer : ContainerBase, IHazardNotifier
 {
-    private const double DangerCapacity = 0.5;
-    private const double normalCapacity = 0.9;
+    public bool IsHazardous { get; set; }
+    
 
-    private bool _isDangerous;
-    private IHazardNotifier _hazardNotifierImplementation;
-    private IHazardNotifier _hazardNotifierImplementation1;
-
-    public LiquidContainer(double loadMass, double height, double emptyMass, double depth, string serialNumber,
-        double maxLoad, bool isDangerous)
-        : base(loadMass, height, emptyMass, depth, serialNumber, maxLoad)
+    public LiquidContainer(double height, double emptyMass, double depth, double maxLoad, string containerType, bool isHazardous)
+        : base(0, height, emptyMass, depth, maxLoad,containerType)
     {
-        _isDangerous = isDangerous;
+        IsHazardous = isHazardous;
     }
 
-    public void NotifyDanger(string containerNumber)
+    public void Load(double newLoad)
     {
-        _hazardNotifierImplementation1.NotifyDanger(containerNumber);
+        double allowedLoad = IsHazardous ? MaxLoad * 0.5 : MaxLoad * 0.9;
+        if (LoadMass+newLoad>allowedLoad)
+        {
+            NotifyDanger("load capacity of the liquid container has been exceeded");
+            throw new OverfillException("Load mass to high!");
+        }
+        else
+        {
+            base.Load(newLoad);
+        }
     }
+
+    public void NotifyDanger(string message)
+    {
+        Console.WriteLine(message);
+    }
+    
 }
